@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Register - Land Info Management</title>
+<style>
+  body {
+    background: #1a1f2b;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+  }
+  .container {
+    background: #2c3358;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px #1098ad;
+    width: 320px;
+  }
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #0ff;
+  }
+  label {
+    display: block;
+    margin-top: 12px;
+    font-weight: 600;
+    color: #a0dce0;
+  }
+  input, select {
+    width: 100%;
+    padding: 8px 12px;
+    margin-top: 6px;
+    border-radius: 6px;
+    border: none;
+    font-size: 16px;
+  }
+  button {
+    margin-top: 20px;
+    width: 100%;
+    background: #0ff;
+    border: none;
+    color: #122;
+    font-weight: 700;
+    padding: 12px 0;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  button:hover {
+    background: #0cc;
+  }
+  .footer-text {
+    margin-top: 16px;
+    text-align: center;
+    font-size: 14px;
+    color: #7eb8bc;
+  }
+  .footer-text a {
+    color: #0ff;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .error-msg {
+    background: #e74c3c;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 6px;
+    color: #fff;
+    font-weight: 600;
+    text-align: center;
+    display: none;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h2>Register</h2>
+    <form id="registerForm" method="POST" action="register.php">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" required autocomplete="username" />
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required autocomplete="new-password" />
+
+      <label for="confirm_password">Confirm Password</label>
+      <input type="password" id="confirm_password" name="confirm_password" required autocomplete="new-password" />
+
+      <label for="role">Register as</label>
+      <select id="role" name="role" required>
+        <option value="" disabled selected>Select role</option>
+        <option value="admin">Admin</option>
+        <option value="user">User</option>
+      </select>
+
+      <button type="submit">Register</button>
+    </form>
+    <div class="footer-text">
+      Already have an account? <a href="login.html">Login</a>
+    </div>
+    <div class="error-msg" id="registerError"></div>
+  </div>
+
+  <script>
+    const registerForm = document.getElementById('registerForm');
+    const registerError = document.getElementById('registerError');
+
+    registerForm.addEventListener('submit', (e) => {
+      if (registerForm.password.value !== registerForm.confirm_password.value) {
+        e.preventDefault();
+        registerError.style.display = 'block';
+        registerError.textContent = "Passwords do not match.";
+      } else {
+        registerError.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

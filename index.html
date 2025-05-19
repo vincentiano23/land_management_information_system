@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Land Information Management System</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f5f7fa;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+  }
+  h1 {
+    text-align: center;
+    color: #2c3e50;
+  }
+  #land-form {
+    background: white;
+    max-width: 700px;
+    margin: 20px auto;
+    box-shadow: 0 4px 8px rgba(44, 62, 80, 0.1);
+    border-radius: 8px;
+    padding: 20px;
+  }
+  #land-form input, #land-form select {
+    width: 100%;
+    padding: 10px;
+    margin: 6px 0 12px 0;
+    border: 1px solid #b0bec5;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  #land-form label {
+    font-weight: 600;
+    margin-bottom: 4px;
+    display: block;
+  }
+  #land-form button {
+    background-color: #2980b9;
+    border: none;
+    color: white;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  #land-form button:hover {
+    background-color: #2071a1;
+  }
+  #land-table-container {
+    max-width: 900px;
+    margin: 30px auto;
+    overflow-x: auto;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    background: white;
+    box-shadow: 0 4px 8px rgba(44, 62, 80, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  th, td {
+    border: 1px solid #d1d9e6;
+    padding: 10px 14px;
+    text-align: left;
+  }
+  th {
+    background-color: #34495e;
+    color: white;
+  }
+  tr:nth-child(even) {
+    background-color: #f7f9fc;
+  }
+  button.edit-btn, button.delete-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    color: white;
+  }
+  button.edit-btn {
+    background-color: #f39c12;
+  }
+  button.edit-btn:hover {
+    background-color: #d17e0a;
+  }
+  button.delete-btn {
+    background-color: #e74c3c;
+  }
+  button.delete-btn:hover {
+    background-color: #c0392b;
+  }
+  #message {
+    max-width: 700px;
+    margin: 10px auto;
+    padding: 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    display: none;
+  }
+  #message.success {
+    background-color: #27ae60;
+    color: white;
+  }
+  #message.error {
+    background-color: #c0392b;
+    color: white;
+  }
+</style>
+</head>
+<body>
+
+<h1>Land Information Management System</h1>
+
+<div id="message"></div>
+
+<div id="land-form">
+  <h2 id="form-title">Add New Land Record</h2>
+  <form id="form">
+    <input type="hidden" id="land-id" />
+    <label for="owner">Owner Name:</label>
+    <input type="text" id="owner" name="owner" required placeholder="Enter owner's full name" />
+
+    <label for="location">Location:</label>
+    <input type="text" id="location" name="location" required placeholder="Enter land location" />
+
+    <label for="size">Size (sq meters):</label>
+    <input type="number" id="size" name="size" min="1" required placeholder="Enter land size" />
+
+    <label for="value">Value (USD):</label>
+    <input type="number" id="value" name="value" min="0" step="0.01" required placeholder="Enter land value" />
+
+    <button type="submit" id="submit-btn">Add Land</button>
+    <button type="button" id="cancel-btn" style="display:none; margin-left:10px;">Cancel Edit</button>
+  </form>
+</div>
+
+<div id="land-table-container">
+  <table id="land-table" aria-label="Land Records Table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Owner</th>
+        <th>Location</th>
+        <th>Size (sq meters)</th>
+        <th>Value (USD)</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="land-table-body">
+      <!-- Data rows inserted here -->
+    </tbody>
+  </table>
+</div>
+
+<script>
+  // URL endpoints to PHP backend scripts
+  // Adjust as per your server setup.
+  const API_BASE = 'api'; // folder where php scripts reside, or adjust accordingly
+  const API_LIST = API_BASE + '/list_lands.php';
+  const API_CREATE = API_BASE + '/create_land.php';
+  const API_UPDATE = API_BASE + '/update_land.php';
+  const API_DELETE = API_BASE + '/delete_land.php';
+
+  // Elements
+  const form = document.getElementById('form');
+  const ownerInput = document.getElementById('owner');
+  const locationInput = document.getElementById('location');
+  const sizeInput = document.getElementById('size');
+  const valueInput = document.getElementById('value');
+  const landTableBody = document.getElementById('land-table-body');
+  const landIdInput = document.getElementById('land-id');
+  const submitBtn = document.getElementById('submit-btn');
+  const cancelBtn = document.getElementById('cancel-btn');
+  const messageDiv = document.getElementById('message');
+  const formTitle = document.getElementById('form-title');
+
+  // Show messages
+  function showMessage(msg, type='success') {
+    messageDiv.textContent = msg;
+    messageDiv.className = type === 'success' ? 'success' : 'error';
+    messageDiv.style.display = 'block';
+    setTimeout(() => {
+      messageDiv.style.display = 'none';
+    }, 4000);
+  }
+
+  // Clear form inputs
+  function clearForm() {
+    form.reset();
+    landIdInput.value = '';
+    submitBtn.textContent = 'Add Land';
+    formTitle.textContent = 'Add New Land Record';
+    cancelBtn.style.display = 'none';
+  }
+
+  // Load land records from backend
+  async function loadLandRecords() {
+    try {
+      const res = await fetch(API_LIST);
+      if (!res.ok) throw new Error('Failed to fetch land records.');
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message || 'Failed to load data.');
+
+      // Populate table
+      landTableBody.innerHTML = '';
+      if (data.lands.length === 0) {
+        landTableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No land records found.</td></tr>';
+        return;
+      }
+      data.lands.forEach((land) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${land.id}</td>
+          <td>${land.owner}</td>
+          <td>${land.location}</td>
+          <td>${land.size}</td>
+          <td>${land.value}</td>
+          <td>
+            <button class="edit-btn" data-id="${land.id}">Edit</button>
+            <button class="delete-btn" data-id="${land.id}">Delete</button>
+          </td>
+        `;
+        landTableBody.appendChild(tr);
+      });
+      attachTableBtnListeners();
+    } catch (err) {
+      showMessage(err.message, 'error');
+    }
+  }
+
+  // Attach listeners for edit and delete buttons in table
+  function attachTableBtnListeners() {
+    document.querySelectorAll('.edit-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        const id = button.getAttribute('data-id');
+        editLand(id);
+      });
+    });
+    document.querySelectorAll('.delete-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        const id = button.getAttribute('data-id');
+        if (confirm('Are you sure you want to delete this land record?')) {
+          deleteLand(id);
+        }
+      });
+    });
+  }
+
+  // Populate form for editing
+  async function editLand(id) {
+    try {
+      const res = await fetch(`${API_LIST}?id=${id}`);
+      if (!res.ok) throw new Error('Failed to get land record');
+      const data = await res.json();
+      if (!data.success || data.lands.length === 0) throw new Error('Land record not found');
+
+      const land = data.lands[0];
+      landIdInput.value = land.id;
+      ownerInput.value = land.owner;
+      locationInput.value = land.location;
+      sizeInput.value = land.size;
+      valueInput.value = land.value;
+      submitBtn.textContent = 'Update Land';
+      formTitle.textContent = 'Edit Land Record';
+      cancelBtn.style.display = 'inline-block';
+      ownerInput.focus();
+    } catch (err) {
+      showMessage(err.message, 'error');
+    }
+  }
+
+  // Insert or update land record via API
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = landIdInput.value;
+    const payload = {
+      owner: ownerInput.value.trim(),
+      location: locationInput.value.trim(),
+      size: sizeInput.value,
+      value: valueInput.value
+    };
+    if (!payload.owner || !payload.location || !payload.size || !payload.value) {
+      showMessage('Please fill all fields', 'error');
+      return;
+    }
+
+    try {
+      let url = API_CREATE;
+      if (id) {
+        url = API_UPDATE;
+        payload.id = id;
+      }
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error('Failed to save land record');
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message || 'Failed to save land record');
+
+      showMessage(data.message || (id ? 'Updated successfully' : 'Created successfully'));
+      clearForm();
+      loadLandRecords();
+    } catch (err) {
+      showMessage(err.message, 'error');
+    }
+  });
+
+  // Cancel edit mode
+  cancelBtn.addEventListener('click', () => {
+    clearForm();
+  });
+
+  // Delete land record via API
+  async function deleteLand(id) {
+    try {
+      const res = await fetch(API_DELETE, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ id })
+      });
+      if (!res.ok) throw new Error('Failed to delete land record');
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message || 'Failed to delete record');
+      showMessage(data.message || 'Deleted successfully');
+      loadLandRecords();
+    } catch (err) {
+      showMessage(err.message, 'error');
+    }
+  }
+
+  // Initial load
+  loadLandRecords();
+</script>
+
+</body>
+</html>
+

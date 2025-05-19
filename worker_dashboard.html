@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Worker Dashboard - Land Info Management</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0; background: #112a46; color: #e6f0fa;
+  }
+  header {
+    background-color: #143a6f;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  }
+  header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #80c4ff;
+  }
+  nav button {
+    background: #80c4ff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-weight: 600;
+    color: #143a6f;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  nav button:hover {
+    background: #62a9f9;
+  }
+  main {
+    padding: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .welcome {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+  }
+  .info-section {
+    background: #1f3a72;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #86baffaa;
+  }
+  .info-section h2 {
+    margin-top: 0;
+    color: #b3d1ff;
+  }
+  .info-section p {
+    font-size: 1rem;
+    color: #dfe7ff;
+  }
+  .limits {
+    margin-top: 14px;
+    font-style: italic;
+    color: #a0bbdb;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Worker Dashboard</h1>
+    <nav>
+      <button onclick="logout()">Logout</button>
+    </nav>
+  </header>
+  <main>
+    <div class="welcome">Welcome, <strong>Worker</strong>!</div>
+    <section class="info-section">
+      <h2>Your Tasks</h2>
+      <p>You can view and update your assigned land records here.</p>
+      <p class="limits">* Note: Workers have restricted access and cannot manage users or view reports.</p>
+    </section>
+    <section class="info-section" style="margin-top: 20px;">
+      <h2>Land Records</h2>
+      <p><a href="land-info-management-system.html" style="color:#80c4ff; text-decoration:none; font-weight:bold;">Go to Land Management</a></p>
+    </section>
+  </main>
+
+<script>
+  function logout() {
+    window.location.href = 'logout.php';
+  }
+</script>
+</body>
+</html>
