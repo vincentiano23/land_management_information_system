@@ -1,108 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Admin Dashboard - Land Info Management</title>
-<style>
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0; background: #0a1631; color: #f0f4f8;
-  }
-  header {
-    background-color: #092146;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 24px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-  }
-  header h1 {
-    margin: 0;
-    font-size: 1.5rem;
-    color: #0ff;
-  }
-  nav button {
-    background: #0ff;
-    border: none;
-    border-radius: 6px;
-    padding: 8px 16px;
-    font-weight: 600;
-    color: #092146;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  nav button:hover {
-    background: #0cc;
-  }
-  main {
-    padding: 24px;
-    max-width: 1000px;
-    margin: 0 auto;
-  }
-  .welcome {
-    font-size: 1.3rem;
-    margin-bottom: 24px;
-  }
-  .feature-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(220px, 1fr));
-    gap: 20px;
-  }
-  .card {
-    background: #123067;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 0 12px #0ff5;
-    cursor: pointer;
-    transition: box-shadow 0.3s ease;
-  }
-  .card:hover {
-    box-shadow: 0 0 20px #0ffa;
-  }
-  .card h3 {
-    margin: 0 0 10px 0;
-    color: #a0e9ff;
-  }
-  .card p {
-    font-size: 0.9rem;
-    color: #c0dff5;
-  }
-</style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - Land Info Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles to ensure Inter font is applied and for specific overrides */
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        /* Hide scrollbar for a cleaner look, but allow scrolling */
+        body::-webkit-scrollbar {
+            display: none; /* For Chrome, Safari, and Opera */
+        }
+        body {
+            -ms-overflow-style: none;  /* For Internet Explorer and Edge */
+            scrollbar-width: none;  /* For Firefox */
+        }
+    </style>
 </head>
-<body>
-  <header>
-    <h1>Admin Dashboard</h1>
-    <nav>
-      <button onclick="logout()">Logout</button>
-    </nav>
-  </header>
-  <main>
-    <div class="welcome">Welcome, <strong>Admin</strong>!</div>
-    <div class="feature-cards">
-      <div class="card" tabindex="0" role="button" onclick="alert('Manage Users feature coming soon!')">
-        <h3>Manage Users</h3>
-        <p>Add, remove, or update users and roles.</p>
-      </div>
-      <div class="card" tabindex="0" role="button" onclick="alert('View Reports feature coming soon!')">
-        <h3>View Reports</h3>
-        <p>Access detailed land info and user activity reports.</p>
-      </div>
-      <div class="card" tabindex="0" role="button" onclick="alert('Manage Land Records feature coming soon!')">
-        <h3>Manage Land Records</h3>
-        <p>Full control over all land information records.</p>
-      </div>
-      <div class="card" tabindex="0" role="button" onclick="alert('Settings coming soon!')">
-        <h3>Settings</h3>
-        <p>Configure application preferences and security.</p>
-      </div>
-    </div>
-  </main>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col">
 
-<script>
-  function logout() {
-    window.location.href = 'logout.php';
-  }
-</script>
+    <header class="bg-gray-800 shadow-lg p-4 md:px-8 flex flex-col sm:flex-row justify-between items-center rounded-b-xl">
+        <h1 class="text-2xl font-bold text-teal-400 mb-4 sm:mb-0">LMIS Admin Dashboard</h1>
+        <nav>
+            <button id="logoutButton"
+                class="bg-teal-500 hover:bg-teal-600 text-gray-900 font-semibold py-2 px-6 rounded-lg shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-opacity-75">
+                Logout
+            </button>
+        </nav>
+    </header>
+
+    <main class="flex-grow p-6 md:p-8 max-w-6xl mx-auto w-full">
+        <div class="welcome-message text-xl md:text-2xl font-medium text-blue-200 mb-8 rounded-lg p-4 bg-gray-800 shadow-inner">
+            Welcome, <strong class="text-teal-300">Admin</strong>!
+        </div>
+
+        <div class="feature-cards grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="card bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1 cursor-pointer"
+                tabindex="0" role="button" onclick="showMessage('Manage Users feature coming soon!')">
+                <h3 class="text-xl font-semibold text-blue-300 mb-3">Manage Users</h3>
+                <p class="text-gray-300 text-sm">Add, remove, or update users and their roles within the system.</p>
+            </div>
+
+            <div class="card bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1 cursor-pointer"
+                tabindex="0" role="button" onclick="showMessage('View Reports feature coming soon!')">
+                <h3 class="text-xl font-semibold text-blue-300 mb-3">View Reports</h3>
+                <p class="text-gray-300 text-sm">Access detailed land information and user activity reports.</p>
+            </div>
+
+            <div class="card bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1 cursor-pointer"
+                tabindex="0" role="button" onclick="showMessage('Manage Land Records feature coming soon!')">
+                <h3 class="text-xl font-semibold text-blue-300 mb-3">Manage Land Records</h3>
+                <p class="text-gray-300 text-sm">Gain full control over all land information records.</p>
+            </div>
+
+            <div class="card bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1 cursor-pointer"
+                tabindex="0" role="button" onclick="showMessage('Settings coming soon!')">
+                <h3 class="text-xl font-semibold text-blue-300 mb-3">Settings</h3>
+                <p class="text-gray-300 text-sm">Configure application preferences and security settings.</p>
+            </div>
+
+            <div class="card bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1 cursor-pointer"
+                tabindex="0" role="button" onclick="showMessage('Audit Log feature coming soon!')">
+                <h3 class="text-xl font-semibold text-blue-300 mb-3">Audit Log</h3>
+                <p class="text-gray-300 text-sm">Review system activities and user actions for compliance.</p>
+            </div>
+
+            <div class="card bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1 cursor-pointer"
+                tabindex="0" role="button" onclick="showMessage('Data Backup feature coming soon!')">
+                <h3 class="text-xl font-semibold text-blue-300 mb-3">Data Backup</h3>
+                <p class="text-gray-300 text-sm">Schedule and manage backups of critical land data.</p>
+            </div>
+        </div>
+    </main>
+
+    <div id="messageBox" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-gray-800 p-8 rounded-xl shadow-2xl max-w-sm w-full text-center">
+            <p id="messageContent" class="text-lg font-medium text-gray-100 mb-6"></p>
+            <button onclick="hideMessage()"
+                class="bg-teal-500 hover:bg-teal-600 text-gray-900 font-semibold py-2 px-6 rounded-lg shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-opacity-75">
+                OK
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Function to show the custom message box
+        function showMessage(message) {
+            const messageBox = document.getElementById('messageBox');
+            const messageContent = document.getElementById('messageContent');
+            messageContent.textContent = message;
+            messageBox.classList.remove('hidden');
+        }
+
+        // Function to hide the custom message box
+        function hideMessage() {
+            const messageBox = document.getElementById('messageBox');
+            messageBox.classList.add('hidden');
+        }
+
+        // Logout function with a simple loading indicator
+        document.getElementById('logoutButton').addEventListener('click', function() {
+            this.textContent = 'Logging out...'; // Change text to indicate loading
+            this.disabled = true; // Disable button to prevent multiple clicks
+            // Simulate an async operation, then redirect
+            setTimeout(() => {
+                window.location.href = 'logout.php'; // Redirect to logout page
+            }, 1000); // Simulate 1 second delay
+        });
+    </script>
 </body>
 </html>
