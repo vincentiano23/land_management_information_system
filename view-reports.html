@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Reports - LMIS Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        body::-webkit-scrollbar {
+            display: none;
+        }
+        body {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col">
+
+    <header class="bg-gray-800 shadow-lg p-4 md:px-8 flex flex-col sm:flex-row justify-between items-center rounded-b-xl">
+        <h1 class="text-2xl font-bold text-teal-400 mb-4 sm:mb-0">LMIS Admin Dashboard</h1>
+        <nav>
+            <button onclick="window.location.href='admin-dashboard.html'"
+                class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 mr-4">
+                Back to Dashboard
+            </button>
+            <button id="logoutButton"
+                class="bg-teal-500 hover:bg-teal-600 text-gray-900 font-semibold py-2 px-6 rounded-lg shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-opacity-75">
+                Logout
+            </button>
+        </nav>
+    </header>
+
+    <main class="flex-grow p-6 md:p-8 max-w-6xl mx-auto w-full">
+        <h2 class="text-3xl md:text-4xl font-bold text-blue-300 mb-8 text-center">View Reports</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-gray-800 p-6 rounded-xl shadow-lg cursor-pointer hover:shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1"
+                 onclick="loadReport('land_summary')">
+                <h3 class="text-xl font-semibold text-blue-300 mb-2">Land Summary Report</h3>
+                <p class="text-gray-300 text-sm">Overview of all land records: total count, average size, total value.</p>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-xl shadow-lg cursor-pointer hover:shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1"
+                 onclick="loadReport('user_activity')">
+                <h3 class="text-xl font-semibold text-blue-300 mb-2">User Activity Log</h3>
+                <p class="text-gray-300 text-sm">Detailed log of user logins, record modifications, and deletions.</p>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-xl shadow-lg cursor-pointer hover:shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1"
+                 onclick="loadReport('value_distribution')">
+                <h3 class="text-xl font-semibold text-blue-300 mb-2">Land Value Distribution</h3>
+                <p class="text-gray-300 text-sm">Breakdown of land records by value ranges or geographical areas.</p>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-xl shadow-lg cursor-pointer hover:shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1"
+                 onclick="loadReport('system_health')">
+                <h3 class="text-xl font-semibold text-blue-300 mb-2">System Health & Performance</h3>
+                <p class="text-gray-300 text-sm">Metrics on database performance, uptime, and resource usage.</p>
+            </div>
+        </div>
+
+        <div id="report-display" class="bg-gray-800 p-6 rounded-xl shadow-xl min-h-[300px] flex items-center justify-center text-center">
+            <p id="report-content" class="text-lg text-gray-400">Select a report from above to view its content.</p>
+        </div>
+    </main>
+
+    <script>
+        const reportContentDiv = document.getElementById('report-content');
+
+        // Mock report data
+        const mockReports = {
+            land_summary: `
+                <h3 class="text-2xl font-bold text-teal-300 mb-4">Land Summary Report</h3>
+                <p class="text-lg text-gray-300">Total Land Records: <span class="font-semibold text-blue-200">150</span></p>
+                <p class="text-lg text-gray-300">Total Area Managed: <span class="font-semibold text-blue-200">1,250,000 sq meters</span></p>
+                <p class="text-lg text-gray-300">Estimated Total Value: <span class="font-semibold text-blue-200">$50,000,000 USD</span></p>
+                <p class="text-sm text-gray-400 mt-4">Last Updated: 2025-05-20 10:30 AM</p>
+            `,
+            user_activity: `
+                <h3 class="text-2xl font-bold text-teal-300 mb-4">User Activity Log (Last 24 Hours)</h3>
+                <ul class="list-disc list-inside text-left text-gray-300">
+                    <li><span class="font-semibold">Admin</span> logged in at 09:00 AM</li>
+                    <li><span class="font-semibold">Editor1</span> updated Land ID 123 at 09:15 AM</li>
+                    <li><span class="font-semibold">User2</span> viewed Land ID 456 at 09:40 AM</li>
+                    <li><span class="font-semibold">Admin</span> deleted Land ID 789 at 10:05 AM</li>
+                    <li><span class="font-semibold">Editor1</span> added new Land record at 10:20 AM</li>
+                </ul>
+                <p class="text-sm text-gray-400 mt-4">Generated: 2025-05-20 11:55 PM</p>
+            `,
+            value_distribution: `
+                <h3 class="text-2xl font-bold text-teal-300 mb-4">Land Value Distribution</h3>
+                <p class="text-lg text-gray-300">Value Range $0 - $10,000: <span class="font-semibold text-blue-200">40 records</span></p>
+                <p class="text-lg text-gray-300">Value Range $10,001 - $50,000: <span class="font-semibold text-blue-200">70 records</span></p>
+                <p class="text-lg text-gray-300">Value Range $50,001 - $100,000: <span class="font-semibold text-blue-200">30 records</span></p>
+                <p class="text-lg text-gray-300">Value Range > $100,000: <span class="font-semibold text-blue-200">10 records</span></p>
+                <p class="text-sm text-gray-400 mt-4">Data as of: 2025-05-20</p>
+            `,
+            system_health: `
+                <h3 class="text-2xl font-bold text-teal-300 mb-4">System Health & Performance</h3>
+                <p class="text-lg text-gray-300">Database Connection: <span class="font-semibold text-green-400">Stable</span></p>
+                <p class="text-lg text-gray-300">Server Uptime: <span class="font-semibold text-blue-200">99.9%</span></p>
+                <p class="text-lg text-gray-300">API Response Time (Avg): <span class="font-semibold text-blue-200">150ms</span></p>
+                <p class="text-sm text-gray-400 mt-4">Real-time data coming soon!</p>
+            `
+        };
+
+        function loadReport(reportType) {
+            reportContentDiv.innerHTML = `<p class="text-lg text-gray-400">Loading report...</p>`;
+            setTimeout(() => { // Simulate fetching data
+                reportContentDiv.innerHTML = mockReports[reportType] || `<p class="text-lg text-red-400">Report not found.</p>`;
+            }, 700);
+        }
+
+        // Logout function
+        document.getElementById('logoutButton').addEventListener('click', function() {
+            this.textContent = 'Logging out...';
+            this.disabled = true;
+            setTimeout(() => {
+                window.location.href = 'logout.php'; // Replace with your actual logout logic
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
